@@ -15,9 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
@@ -38,13 +35,18 @@ import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
 
-//import com.squareup.okhttp.Request;
-
-//import okhttp3.MediaType;
-//import okhttp3.MultipartBody;
-
+//
 //import com.android.volley.Request;
 //import com.android.volley.Response;
+
+//import com.squareup.okhttp.*;
+//import okhttp3.MediaType;
+//import okhttp3.MultipartBody;
+//import okhttp3.OkHttpClient;
+//import okhttp3.Request;
+//import okhttp3.RequestBody;
+
+//import okhttp3.MultipartBody;
 //import okhttp3.OkHttpClient;
 
 
@@ -383,12 +385,12 @@ public class Photo extends AppCompatActivity {
 
     }
 //
-    public Photo sendImage() {
-        RequestQueue mQueue = Volley.newRequestQueue(this);
-        ConnectionImg imageUploadReq = new ConnectionImg(url, ErrorListener, Listener, currentImage);
-        mQueue.add(imageUploadReq);
-        return null;
-    }
+//    public Photo sendImage() {
+//        RequestQueue mQueue = Volley.newRequestQueue(this);
+//        ConnectionImg imageUploadReq = new ConnectionImg(url, ErrorListener, Listener, currentImage);
+//        mQueue.add(imageUploadReq);
+//        return null;
+//    }
 
 
     public void setPostRequestContent(HttpURLConnection conn, JSONObject jsonObject) throws IOException {
@@ -462,7 +464,7 @@ public class Photo extends AppCompatActivity {
             Log.e("", e.getMessage(), e);
             return null;
         }
-    }}
+    }
 
 
 //    private void send(){
@@ -476,12 +478,12 @@ public class Photo extends AppCompatActivity {
 //        OkHttpClient client = new OkHttpClient();
 //
 //// Create a multipart request body. Add metadata and files as 'data parts'.
-//        okhttp3.RequestBody requestBody = new MultipartBody.Builder()
+//        RequestBody requestBody = new MultipartBody.Builder()
 //                .setType(MultipartBody.FORM)
 //                .addFormDataPart("username", username)
 //                .addFormDataPart("datetime", datetime)
 //                .addFormDataPart("image", image.getName(),
-//                        okhttp3.RequestBody.create(okhttp3.MediaType.parse("image/jpeg"), image))
+//                       RequestBody.create(MediaType.parse("image/jpeg"), image))
 //                .build();
 //
 //// Create a POST request to send the data to UPLOAD_URL
@@ -508,7 +510,7 @@ public class Photo extends AppCompatActivity {
 //    }
 //
 //
-//}
+}
 
 
 //        extends Activity {

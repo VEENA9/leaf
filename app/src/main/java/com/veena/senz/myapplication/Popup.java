@@ -75,7 +75,7 @@ public class Popup extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            send();
+                           // send();
                             issend = true;
                         } catch (Exception e) {
                             Log.e("Responce", response.toString());
@@ -154,8 +154,8 @@ public class Popup extends AppCompatActivity {
             }
 
 
-            private void send(){
-             Photo ph=new Photo().sendImage();
+//            private void send(){
+//             Photo ph=new Photo().sendImage();
 
 
 
@@ -163,7 +163,7 @@ public class Popup extends AppCompatActivity {
 //                PhotoMultipartRequest imageUploadReq = new PhotoMultipartRequest(url, ErrorListener, Listener, imageFile);
 //                mQueue.add(imageUploadReq);
             }
-        }
+ //       }
 
 
 
