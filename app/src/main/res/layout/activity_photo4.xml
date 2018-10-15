@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layoutProfile"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="#ffffff">
 
 
     <ImageView
         android:id="@+id/user_profile_photo"
-        android:layout_width="356dp"
+        android:layout_width="match_parent"
         android:layout_height="396dp"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
@@ -30,6 +30,18 @@
         android:elevation="4dp"
         android:padding="20dp"
         android:text="Send"
+        android:textColor="#fff"
         android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="369dp"
+        android:layout_height="49dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:text="upload leaf photo.."
+        android:textSize="20dp"
+        android:textColor="#000000" />
 
 </RelativeLayout>

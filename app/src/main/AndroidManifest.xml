@@ -25,7 +25,7 @@
         android:roundIcon="@mipmap/a6"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Photo4">
+        <activity android:name=".Register">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,9 +33,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".exphoto" />
-        <activity android:name=".Login" />
+        <activity android:name=".Photo4" />
         <activity android:name=".Popup" />
-        <activity android:name=".Register" />
+        <activity android:name=".Login" />
         <activity android:name=".Photo" />
     </application>
 

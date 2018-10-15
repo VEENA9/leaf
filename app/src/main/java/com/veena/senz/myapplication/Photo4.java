@@ -10,11 +10,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -39,11 +39,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-
 public class Photo4 extends AppCompatActivity {
 
     ImageView user_profile_photo;
@@ -56,7 +51,7 @@ public class Photo4 extends AppCompatActivity {
     public  static final int RequestPermissionCode  = 1 ;
     private static File currentImage;
     private ImageView mImageView;
-    String mCurrentPhotoPath;
+    static String mCurrentPhotoPath;
     ProgressDialog prgDialog;
 
     private static int myVarible = 0;
@@ -66,6 +61,11 @@ public class Photo4 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo4);
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         EnableRuntimePermissionToAccessCamera();
@@ -80,7 +80,7 @@ public class Photo4 extends AppCompatActivity {
         pDialog.setCancelable(false);
         ButtonClick();
 
-//        createImageFile();
+
 
     }
 
@@ -109,7 +109,13 @@ public class Photo4 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                uploadImage();
+                try {
+                   Sendimg.uploadImage();
+                    gopege();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 //
 //                String image = getStringImage(thumbnail);
 //
@@ -135,48 +141,7 @@ public class Photo4 extends AppCompatActivity {
         });
     }
 
-    private void uploadImage() {
 
-            String  url = "http://10.91.150.250:5000/api/auth/signin";
-
-// Example data
-            String lname = "test_user_123";
-            String description = "2016-12-09 10:00:00";
-            File image = currentImage;
-// Create an HTTP client to execute the request
-            OkHttpClient client = new OkHttpClient();
-
-// Create a multipart request body. Add metadata and files as 'data parts'.
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("username", lname)
-                    .addFormDataPart("datetime", description)
-                    .addFormDataPart("image", image.getName(),
-                            RequestBody.create(MediaType.parse("image/jpeg"), image))
-                    .build();
-
-// Create a POST request to send the data to UPLOAD_URL
-            okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(url)
-                    .post(requestBody)
-                    .build();
-
-// Execute the request and get the response from the server
-            okhttp3.Response response = null;
-
-            try {
-                response = client.newCall(request).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-// Check the response to see if the upload succeeded
-            if (response == null || !response.isSuccessful()) {
-                Log.w("Example", "Unable to upload to server.");
-            } else {
-                Log.v("Example", "Upload was successful.");
-            }
-        }
 //        RequestQueue rq = Volley.newRequestQueue(this);
 //        String url = "http:/plantnow.net16.net/uploaded.php";
 //        Log.d("URL", url);
@@ -391,7 +356,7 @@ public class Photo4 extends AppCompatActivity {
             try {
                 thumbnail = MediaStore.Images.Media.getBitmap(Photo4.this.getContentResolver(), data.getData());
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+                thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                 File destination = new File(Environment.getExternalStorageDirectory(),
                         System.currentTimeMillis() + ".jpg");
                 FileOutputStream fo;
@@ -437,7 +402,7 @@ public class Photo4 extends AppCompatActivity {
             pDialog.dismiss();
     }
 
-    private File createImageFile() throws IOException {
+    public static File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -452,7 +417,12 @@ public class Photo4 extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         currentImage = image;
        // Log.i(TAG, "photo path = " + mCurrentPhotoPath);
-        return image;
+        return currentImage;
+    }
+
+    private void gopege() {
+        Intent i = new Intent(getApplicationContext(),Photo4.class);
+        startActivity(i);
     }
 
 }
