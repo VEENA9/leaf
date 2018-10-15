@@ -46,7 +46,7 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         //new SendPostRequest.doInBackground().execute();
-        baseUrl = "http://10.91.150.250:5000/api/auth/signup";
+        baseUrl = "http://10.91.150.78:8080/api/auth/signup";
 
         //initializing view objects
         editTextName = (EditText) findViewById(R.id.editText5);
@@ -57,138 +57,143 @@ public class Register extends AppCompatActivity {
         buttonSubmit = (Button) findViewById(R.id.button2);
 
     }
-            public void register(View view) {
-                String username = editTextName.getText().toString();
-                String name = Name.getText().toString();
-                String email = emailET.getText().toString();
-                String password = editTextPassword.getText().toString();
-                String confirmPassword = editTextPassword1.getText().toString();
 
-                    JSONObject js = new JSONObject();
-                    try {
-                        js.put("username", username);
-                        js.put("name", name);
-                        js.put("email", email);
-                        js.put("password", password);
+    public void register(View view) {
+        String username = editTextName.getText().toString();
+        String name = Name.getText().toString();
+        String email = emailET.getText().toString();
+        String password = editTextPassword.getText().toString();
+        String confirmPassword = editTextPassword1.getText().toString();
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        JSONObject js = new JSONObject();
+        try {
+            js.put("username", username);
+            js.put("name", name);
+            js.put("email", email);
+            js.put("password", password);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, baseUrl, js, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    isReg = Boolean.parseBoolean(response.getString("success"));
+                    if (isReg) {
+                        succ();
+                          goRegpege();
+                    } else {
+                        unsucc();
                     }
-                    JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                            Request.Method.POST, baseUrl, js, new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    try {
-                                        isReg = true;
-                                    }catch (Exception e) {
-                                        Log.e("Responce", response.toString());
-                                    }
-                                }
-                            },
-                                    new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        VolleyLog.d("error response", "Error: " + error.getMessage());
-                }  }) {
+                } catch (Exception e) {
 
-                        /**
-                         * Passing some request headers
-                         */
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            HashMap<String, String> headers = new HashMap<String, String>();
-                            headers.put("Content-Type", "application/json; charset=utf-8");
-                            return headers;
-                        }
-
-                    };
-
-                     if (validateReg(username, name, email, password, confirmPassword)) {
-//                    //do login
-                        // Adding request to request queue
-                         Volley.newRequestQueue(this).add(jsonObjReq);
-
-                    }
-                
-
-                if (isReg) {
-                    succ();
-                    goRegpege();
-                } else {
-                    unsucc();
+                    Toast.makeText(getApplicationContext(), "catch", Toast.LENGTH_SHORT).show();
+                    Log.e("Responce", response.toString());
                 }
             }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.d("error response", "Error: " + error.getMessage());
+                    }
+                }) {
 
-            private boolean validateReg(String username, String name, String email, String password, String confirmPassword) {
-                //adding validation to edittexts
+            /**
+             * Passing some request headers
+             */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
 
-                boolean invalid = false;
+        };
 
-                if (username.equals("")) {
-                    invalid = true;
-                    Toast.makeText(getApplicationContext(), "Enter your Given username", Toast.LENGTH_SHORT).show();
-                } else if (name.equals("")) {
-                    invalid = true;
-                    Toast.makeText(getApplicationContext(), "Please enter your name", Toast.LENGTH_SHORT)
-                            .show();
-                } else if (email.equals("")) {
-                    invalid = true;
-                    Toast.makeText(getApplicationContext(), "Please enter the email", Toast.LENGTH_SHORT)
-                            .show();
-                } else if (password.equals("")) {
-                    invalid = true;
-                    Toast.makeText(getApplicationContext(), "Please enter the password", Toast.LENGTH_SHORT)
-                            .show();
-                } else if (confirmPassword.equals("")) {
-                    invalid = true;
-                    Toast.makeText(getApplicationContext(), "Please enter the conform  password", Toast.LENGTH_SHORT)
-                            .show();
-                }
+        if (!validateReg(username, name, email, password, confirmPassword)) {
+//                    //do login
+            // Adding request to request queue
+            Volley.newRequestQueue(this).add(jsonObjReq);
+
+        }
+
+
+//                if (isReg) {
+//                    succ();
+//                    goRegpege();
+//                } else {
+//                    unsucc();
+//                }
+    }
+
+    private boolean validateReg(String username, String name, String email, String password, String confirmPassword) {
+        //adding validation to edittexts
+
+        boolean invalid = false;
+
+        if (username.equals("")) {
+            invalid = true;
+            Toast.makeText(getApplicationContext(), "Enter your Given username", Toast.LENGTH_SHORT).show();
+        } else if (name.equals("")) {
+            invalid = true;
+            Toast.makeText(getApplicationContext(), "Please enter your name", Toast.LENGTH_SHORT)
+                    .show();
+        } else if (email.equals("")) {
+            invalid = true;
+            Toast.makeText(getApplicationContext(), "Please enter the email", Toast.LENGTH_SHORT)
+                    .show();
+        } else if (password.equals("")) {
+            invalid = true;
+            Toast.makeText(getApplicationContext(), "Please enter the password", Toast.LENGTH_SHORT)
+                    .show();
+        } else if (confirmPassword.equals("")) {
+            invalid = true;
+            Toast.makeText(getApplicationContext(), "Please enter the conform  password", Toast.LENGTH_SHORT)
+                    .show();
+        }
 
 //                        if(!editTextPassword.getText().toString().equals(editTextPassword1.getText().toString())){
 //                            Toast.makeText(getApplicationContext(), "Password Not matched", Toast.LENGTH_LONG).show();
 
-                else if (!password.equals(confirmPassword))
-                {
-                    Toast.makeText(getApplicationContext(), "Password Not matched", Toast.LENGTH_LONG).show();
-                }
-                else if
+        else if (!password.equals(confirmPassword)) {
+            Toast.makeText(getApplicationContext(), "Password Not matched", Toast.LENGTH_LONG).show();
+        } else if
 
-                            (password.length() < 6 || password.length() > 10)
-                {
-                    Toast.makeText(getApplicationContext(), "Please enter the password 6 to 10", Toast.LENGTH_SHORT)
-                            .show();
-                    editTextPassword.requestFocus();
-                    return false;
-                } else if
-                        (name.length() == 10) {
-                    Toast.makeText(getApplicationContext(), "Please enter the name", Toast.LENGTH_SHORT)
-                            .show();
-                    editTextPassword.requestFocus();
-                    return false;
-                }
+                (password.length() < 6 || password.length() > 10) {
+            Toast.makeText(getApplicationContext(), "Please enter the password 6 to 10", Toast.LENGTH_SHORT)
+                    .show();
+            editTextPassword.requestFocus();
+            return false;
+        } else if
+                (name.length() == 10) {
+            Toast.makeText(getApplicationContext(), "Please enter the name", Toast.LENGTH_SHORT)
+                    .show();
+            editTextPassword.requestFocus();
+            return false;
+        }
 
 //                    else {
 //                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
 //                    }
 
 
-                // buttonSubmit.setOnClickListener(this);
-                return invalid;
-            }
-
-
-
+        // buttonSubmit.setOnClickListener(this);
+        return invalid;
+    }
 
 
     private void goRegpege() {
-        Intent i = new Intent(getApplicationContext(), Register.class);
+        Intent i = new Intent(getApplicationContext(), Login.class);
         startActivity(i);
     }
-    private void succ(){
+
+    private void succ() {
         Toast.makeText(this, "Reg succes", Toast.LENGTH_SHORT).show();
     }
-    private void unsucc(){
+
+    private void unsucc() {
         Toast.makeText(this, "Reg fail", Toast.LENGTH_SHORT).show();
     }
 

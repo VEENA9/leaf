@@ -44,7 +44,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 //        MyRequestQueue = Volley.newRequestQueue(this);
 
-        baseUrl = "http://10.91.150.250:8080/api/auth/signin";
+        baseUrl = "http://10.91.150.78:8080/api/auth/signin";
 
 
         editText_login_username = (EditText) findViewById(R.id.editText_login_username);
@@ -153,7 +153,7 @@ public class Login extends AppCompatActivity {
         if (isLogin) {
             findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
             Toast.makeText(this, "login succes", Toast.LENGTH_SHORT).show();
-            goRegpege();
+            goPhotopage();
         } else {
             Toast.makeText(this, "login unsucces", Toast.LENGTH_SHORT).show();
         }
@@ -167,8 +167,8 @@ public class Login extends AppCompatActivity {
 //        }
     }
 
-    private void goRegpege() {
-        Intent i = new Intent(getApplicationContext(), Register.class);
+    private void goPhotopage() {
+        Intent i = new Intent(getApplicationContext(), Photo.class);
         startActivity(i);
     }
 

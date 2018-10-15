@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,23 +30,19 @@ import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
 
-//
 //import com.android.volley.Request;
 //import com.android.volley.Response;
-
 //import com.squareup.okhttp.*;
-//import okhttp3.MediaType;
-//import okhttp3.MultipartBody;
-//import okhttp3.OkHttpClient;
-//import okhttp3.Request;
-//import okhttp3.RequestBody;
-
-//import okhttp3.MultipartBody;
-//import okhttp3.OkHttpClient;
 
 
 public class Photo extends AppCompatActivity {
@@ -58,7 +53,7 @@ public class Photo extends AppCompatActivity {
     private final int requestCode = 20;
     public static final int CAMERA_REQUEST_CODE = 228;
     public static final int CAMERA_PERMISSION_REQUEST_CODE = 4192;
-    private File currentImage;
+    private static File currentImage;
     private static final int CAMERA_PHOTO = 111;
     private static final int resultCode = -1;
     private Uri imageToUploadUri;
@@ -109,7 +104,6 @@ public class Photo extends AppCompatActivity {
                                 Bitmap reducedSizeBitmap = getBitmap(imageToUploadUri.getPath());
                                 if (reducedSizeBitmap != null) {
                                     mImageView.setImageBitmap(reducedSizeBitmap);
-                                    setImage();
                                 } else {
                                     //makeText(this,"Error while capturing Image", LENGTH_LONG).show();
                                 }
@@ -210,48 +204,48 @@ public class Photo extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        makeText(this, "onACtivity", LENGTH_LONG).show();
-        try {
-
-            super.onActivityResult(requestCode, resultCode, data);
-            if (this.CAMERA_REQUEST_CODE == requestCode && resultCode == RESULT_OK) {
-                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                makeText(this, data.getExtras().get("data").toString(), LENGTH_LONG).show();
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        makeText(this, "onACtivity", LENGTH_LONG).show();
+//        try {
 //
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                File destination = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
-                FileOutputStream fo;
-                try {
-                    fo = new FileOutputStream(destination);
-                    fo.write(bytes.toByteArray());
-                    fo.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                new uploadFileToServerTask().execute(destination.getAbsolutePath());
+//            super.onActivityResult(requestCode, resultCode, data);
+//            if (this.CAMERA_REQUEST_CODE == requestCode && resultCode == RESULT_OK) {
+//                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+//                makeText(this, data.getExtras().get("data").toString(), LENGTH_LONG).show();
+////
+//                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+//                File destination = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+//                FileOutputStream fo;
+//                try {
+//                    fo = new FileOutputStream(destination);
+//                    fo.write(bytes.toByteArray());
+//                    fo.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                new uploadFileToServerTask().execute(destination.getAbsolutePath());
 
 
                 //
-//                String partFilename = currentDateFormat();
-//                storeCameraPhotoInSDCard(thumbnail, partFilename);
+////                String partFilename = currentDateFormat();
+////                storeCameraPhotoInSDCard(thumbnail, partFilename);
+////
+////                // display the image from SD Card to ImageView Control
+////
+////                String storeFilename =Environment.getExternalStorageDirectory()+ "/Leaf photo" + partFilename + ".jpg";
+////                Bitmap mBitmap = getImageFileFromSDCard(storeFilename);
+////                mImageView.setImageBitmap(mBitmap);
+//            }
+//        } catch (Exception ex) {
+//            makeText(Photo.this, ex.toString(),
+//                    LENGTH_SHORT).show();
+//        }
 //
-//                // display the image from SD Card to ImageView Control
 //
-//                String storeFilename =Environment.getExternalStorageDirectory()+ "/Leaf photo" + partFilename + ".jpg";
-//                Bitmap mBitmap = getImageFileFromSDCard(storeFilename);
-//                mImageView.setImageBitmap(mBitmap);
-            }
-        } catch (Exception ex) {
-            makeText(Photo.this, ex.toString(),
-                    LENGTH_SHORT).show();
-        }
-
-
-    }
+//    }
 
 
     private String currentDateFormat() {
@@ -264,7 +258,7 @@ public class Photo extends AppCompatActivity {
         File outputFile = new File(Environment.getExternalStorageDirectory(), "/Leaf photo" + currentDate + ".jpg");
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (FileNotFoundException e) {
@@ -467,49 +461,49 @@ public class Photo extends AppCompatActivity {
     }
 
 
-//    private void send(){
-//        String  url = "http://10.91.150.250:5000/api/auth/signin";
-//
-//// Example data
-//        String username = "test_user_123";
-//        String datetime = "2016-12-09 10:00:00";
-//        File image = currentImage;
-//// Create an HTTP client to execute the request
-//        OkHttpClient client = new OkHttpClient();
-//
-//// Create a multipart request body. Add metadata and files as 'data parts'.
-//        RequestBody requestBody = new MultipartBody.Builder()
-//                .setType(MultipartBody.FORM)
-//                .addFormDataPart("username", username)
-//                .addFormDataPart("datetime", datetime)
-//                .addFormDataPart("image", image.getName(),
-//                       RequestBody.create(MediaType.parse("image/jpeg"), image))
-//                .build();
-//
-//// Create a POST request to send the data to UPLOAD_URL
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .post(requestBody)
-//                .build();
-//
-//// Execute the request and get the response from the server
-//        Response response = null;
-//
-//        try {
-//            response = client.newCall(request).execute();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//// Check the response to see if the upload succeeded
-//        if (response == null || !response.isSuccessful()) {
-//            Log.w("Example", "Unable to upload to server.");
-//        } else {
-//            Log.v("Example", "Upload was successful.");
-//        }
-//    }
-//
-//
+    public static void send(){
+        String  url = "http://10.91.150.250:5000/api/auth/signin";
+
+// Example data
+        String username = "test_user_123";
+        String datetime = "2016-12-09 10:00:00";
+        File image = currentImage;
+// Create an HTTP client to execute the request
+        OkHttpClient client = new OkHttpClient();
+
+// Create a multipart request body. Add metadata and files as 'data parts'.
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("username", username)
+                .addFormDataPart("datetime", datetime)
+                .addFormDataPart("image", image.getName(),
+                       RequestBody.create(MediaType.parse("image/jpeg"), image))
+                .build();
+
+// Create a POST request to send the data to UPLOAD_URL
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+// Execute the request and get the response from the server
+        Response response = null;
+
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+// Check the response to see if the upload succeeded
+        if (response == null || !response.isSuccessful()) {
+            Log.w("Example", "Unable to upload to server.");
+        } else {
+            Log.v("Example", "Upload was successful.");
+        }
+    }
+
+
 }
 
 

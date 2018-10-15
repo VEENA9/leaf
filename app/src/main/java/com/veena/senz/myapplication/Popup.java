@@ -36,7 +36,7 @@ public class Popup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         baseUrl = "http://10.91.150.250:5000/api/auth/signup";
-        Button mShowDialog = (Button) findViewById(R.id.btnShowDialog);}
+        Button mShowDialog = (Button) findViewById(R.id.btnSend);}
         public void Dialog (View view){
 
 
@@ -75,7 +75,7 @@ public class Popup extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                           // send();
+                           Photo.send();
                             issend = true;
                         } catch (Exception e) {
                             Log.e("Responce", response.toString());
